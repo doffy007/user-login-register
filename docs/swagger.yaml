@@ -1,0 +1,64 @@
+basePath: /api
+definitions:
+  request.ParamUserLogin:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  request.ParamUserRegister:
+    properties:
+      confirm_password:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+host: localhost:8081
+info:
+  contact: {}
+  description: A Tag service API in Golang
+  title: Tag User Login And Register API
+  version: "1.0"
+paths:
+  /v1/user/login:
+    post:
+      description: Login User
+      parameters:
+      - description: Login tags
+        in: body
+        name: tags
+        required: true
+        schema:
+          $ref: '#/definitions/request.ParamUserLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Login for user
+      tags:
+      - tags
+  /v1/user/register:
+    post:
+      description: Register User
+      parameters:
+      - description: Create tags
+        in: body
+        name: tags
+        required: true
+        schema:
+          $ref: '#/definitions/request.ParamUserRegister'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Register for user
+      tags:
+      - tags
+swagger: "2.0"

@@ -9,5 +9,8 @@ mocks:
 	$(pwd) cd internal/usecase  && mockery --all
 	$(pwd) cd internal/repository  && mockery --all
 
+swag:
+	swag init
+
 start:
 	go run main.go

@@ -35,6 +35,7 @@ The project Created REST API Example using golang, gin, and tools JWT. This proj
 |   └── docs.go
 |   └── swagger.json
 |   └── swagger.yaml
+|   └── Documentations about the repository.pdf
 ├── internal
 |   └── constants
 |   └── entity

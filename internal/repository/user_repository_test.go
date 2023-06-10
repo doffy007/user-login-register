@@ -2,106 +2,65 @@ package repository
 
 import (
 	"context"
-	"reflect"
 	"testing"
 
+	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/doffy007/user-login-register/config"
 	"github.com/doffy007/user-login-register/internal/entity"
 	"github.com/jmoiron/sqlx"
+	"github.com/stretchr/testify/assert"
 )
 
-func Test_userRepository_CreateUser(t *testing.T) {
-	type fields struct {
-		ctx    context.Context
-		config *config.Config
-		db     *sqlx.DB
+func TestUserRepository_CreateUser(t *testing.T) {
+	// Create database
+	db, mock, _ := sqlmock.New()
+	defer db.Close()
+
+	// Set up the repository database
+	repo := &userRepository{
+		ctx:    context.TODO(),
+		config: &config.ConfigureApp,
+		db:     sqlx.NewDb(db, "sqlmock"),
 	}
-	type args struct {
-		payload entity.CreateUser
-	}
-	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr bool
-	}{
-		{
-			name: "test create user",
-			fields: fields{
-				ctx:    context.Background(),
-				config: &config.Config{},
-				db:     &sqlx.DB{},
-			},
-			args: args{
-				payload: entity.CreateUser{
-					Username: new(string),
-					Email:    new(string),
-					Password: new(string),
-				},
-			},
-			wantErr: false,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			r := userRepository{
-				ctx:    tt.fields.ctx,
-				config: tt.fields.config,
-				db:     tt.fields.db,
-			}
-			if err := r.CreateUser(tt.args.payload); (err != nil) != tt.wantErr {
-				t.Errorf("userRepository.CreateUser() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
-	}
+
+	// Set up the expected query and mock response
+	mock.ExpectExec("INSERT INTO users").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
+
+	// Call the method being tested
+	err := repo.CreateUser(entity.CreateUser{
+		Username: new(string),
+		Email:    new(string),
+		Password: new(string),
+	})
+
+	// Assert the result
+	assert.NoError(t, err, "Unexpected error")
+	assert.NoError(t, mock.ExpectationsWereMet(), "Expectations not met")
 }
 
-func Test_userRepository_FindOneUser(t *testing.T) {
-	type fields struct {
-		ctx    context.Context
-		config *config.Config
-		db     *sqlx.DB
+func TestUserRepository_FindOneUser(t *testing.T) {
+	// Create database
+	db, mock, _ := sqlmock.New()
+	defer db.Close()
+
+	// Set up the repository database
+	repo := &userRepository{
+		ctx:    context.TODO(),
+		config: &config.ConfigureApp,
+		db:     sqlx.NewDb(db, "sqlmock"),
 	}
-	type args struct {
-		payload entity.FindOneUser
-		fields  []string
-	}
-	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		want    *entity.Users
-		wantErr bool
-	}{
-		{
-			name: "Test FindOneUser",
-			fields: fields{
-				ctx:    context.Background(),
-				config: &config.Config{},
-				db:     &sqlx.DB{},
-			},
-			want: &entity.Users{
-				Username: new(string),
-				Email:    new(string),
-				Password: new(string),
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			r := userRepository{
-				ctx:    tt.fields.ctx,
-				config: tt.fields.config,
-				db:     tt.fields.db,
-			}
-			got, err := r.FindOneUser(tt.args.payload, tt.args.fields)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("userRepository.FindOneUser() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("userRepository.FindOneUser() = %v, want %v", got, tt.want)
-			}
-		})
-	}
+
+	// Set up the expected query and mock response
+	mock.ExpectQuery("SELECT (.+) FROM users").WithArgs().WillReturnRows(&sqlmock.Rows{})
+
+	// Call the method being tested
+	result, err := repo.FindOneUser(entity.FindOneUser{
+		Username: new(string),
+		Email:    new(string),
+	}, []string{})
+
+	// Assert the result
+	assert.NoError(t, err, "Unexpected error")
+	assert.Nil(t, result, "Unexpected result")
+	assert.NoError(t, mock.ExpectationsWereMet(), "Expectations not met")
 }

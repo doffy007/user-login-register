@@ -63,7 +63,7 @@ The project Created REST API Example using golang, gin, and tools JWT. This proj
 
 A brief description of the layout:
 
-- `.husky` 
+- `.husky` contains the setting pre-commit.
 - `.vscode` is the vscode settings.json add a new vocabulary.
 - `config` contains configure for this project.
 - `database` contains database of the project.

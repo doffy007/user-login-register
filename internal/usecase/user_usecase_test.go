@@ -44,7 +44,6 @@ func (m *mockHelper) HashPassword(password string) (string, error) {
 }
 
 func TestUserUsecase_UserLogin(t *testing.T) {
-	// Set up the test
 	usecase := userUsecase{
 		ctx:            context.Background(),
 		config:         &config.Config{},
@@ -56,10 +55,8 @@ func TestUserUsecase_UserLogin(t *testing.T) {
 		Password: string("password"),
 	}
 
-	// Call the method being tested
 	success, response := usecase.UserLogin(params)
 
-	// Assert the results
 	assert.NotNil(t, success, "Expected login to be successful")
 	assert.NotNil(t, http.StatusCreated, response.StatusCode, "Unexpected status code")
 	assert.NotNil(t, "success login user", response.Message, "Unexpected message")
@@ -68,7 +65,6 @@ func TestUserUsecase_UserLogin(t *testing.T) {
 }
 
 func TestUserUsecase_UserRegister(t *testing.T) {
-	// Set up the test
 	usecase := userUsecase{
 		ctx:            context.Background(),
 		config:         &config.Config{},
@@ -81,10 +77,8 @@ func TestUserUsecase_UserRegister(t *testing.T) {
 		Password: "password",
 	}
 
-	// Call the method being tested
 	success, response := usecase.UserRegister(params)
 
-	// Assert the results
 	assert.True(t, success, "Expected user registration to be successful")
 	assert.Equal(t, http.StatusCreated, response.StatusCode, "Unexpected status code")
 	assert.Equal(t, "success created user", response.Message, "Unexpected message")
